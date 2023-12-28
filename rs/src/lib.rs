@@ -3,6 +3,7 @@
 pub mod eadk;
 pub mod mallocator;
 
+use alloc::format;
 use eadk::{display::{self, Rect, Color, Font, Point, Bitmap}, input::{self, Key}};
 use mallocator::Mallocator;
 
@@ -57,9 +58,19 @@ pub extern "C" fn rs_main() {
 }
 
 #[panic_handler]
-fn panic_handler(_: &core::panic::PanicInfo) -> ! {
+fn panic_handler(info: &core::panic::PanicInfo) -> ! {
+    // Print heading
     display::fill(Rect::SCREEN, Color::WHITE);
     display::write_string("Panic!", Point { x: 0, y: 0 }, Font::Large, Color::WHITE, Color::RED);
+
+    // Print panic message, chunked into lines
+    let panic_message = format!("{info}");
+    for (i, line) in panic_message.as_bytes().chunks(45).enumerate() {
+        display::write_string(
+            unsafe { core::str::from_utf8_unchecked(line) },
+            Point { x: 0, y: 50 + (i as u16) * 20 }, Font::Small, Color::BLACK, Color::WHITE
+        );
+    }
 
     loop {
         input::keyboard_scan();
