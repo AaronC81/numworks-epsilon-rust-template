@@ -35,7 +35,23 @@ eadk_display_push_rect_uniform(eadk_rect_t rect, eadk_color_t color);
 eadk_bridge__display_push_rect_uniform(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
 ```
 
-I haven't had any problems with this approach so far!
+## Features
+
+Most of the important EADK APIs are broken out into nice, high-level Rust APIs. For example:
+
+```rust
+display::write_string(
+  "Hello from Rust!",
+  Point { x: 50, y: 50 },
+  Font::Large,
+  Color::BLACK,
+  Color::WHITE,
+);
+
+timing::msleep(1000);
+```
+
+There is also a `GlobalAlloc` implementation, so you can use the `alloc` crate.
 
 ## Compatibility
 
