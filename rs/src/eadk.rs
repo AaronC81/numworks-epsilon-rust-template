@@ -1,6 +1,6 @@
-// Links against the C-provided `eadk_bridge`.
-//
-// Targets the `eadk_bridge` for `nwlink` 0.0.17.
+//! Links against the C-provided `eadk_bridge`.
+//!
+//! Targets the `eadk_bridge` for `nwlink` 0.0.17.
 
 extern "C" {
     // Keyboard and Events
@@ -20,13 +20,78 @@ extern "C" {
 }
 
 pub mod input {
+    /// The keyboard's keys.
+    #[repr(u64)]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+    pub enum Key {
+        Left = 0,
+        Up = 1,
+        Down = 2,
+        Right = 3,
+        Ok = 4,
+        Back = 5,
+        Home = 6,
+        OnOff = 8,
+        Shift = 12,
+        Alpha = 13,
+        Xnt = 14,
+        Var = 15,
+        Toolbox = 16,
+        Backspace = 17,
+        Exp = 18,
+        Ln = 19,
+        Log = 20,
+        Imaginary = 21,
+        Comma = 22,
+        Power = 23,
+        Sine = 24,
+        Cosine = 25,
+        Tangent = 26,
+        Pi = 27,
+        Sqrt = 28,
+        Square = 29,
+        Seven = 30,
+        Eight = 31,
+        Nine = 32,
+        LeftParenthesis = 33,
+        RightParenthesis = 34,
+        Four = 36,
+        Five = 37,
+        Six = 38,
+        Multiplication = 39,
+        Division = 40,
+        One = 42,
+        Two = 43,
+        Three = 44,
+        Plus = 45,
+        Minus = 46,
+        Zero = 48,
+        Dot = 49,
+        Ee = 50,
+        Ans = 51,
+        Exe = 52      
+    }
+
+    /// Holds a snapshot of which keys were pressed.
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+    pub struct KeyboardScan(u64);
+
+    impl KeyboardScan {
+        /// Determines whether the given [Key] was pressed during this scan.
+        pub fn is_pressed(&self, key: Key) -> bool {
+            self.0 & (1 << (key as u64)) > 0
+        }
+    }
+
     /// Scans the keyboard and returns its state.
-    pub fn keyboard_scan() -> u64 {
-        unsafe { super::eadk_bridge__keyboard_scan() }
+    pub fn keyboard_scan() -> KeyboardScan {
+        unsafe { KeyboardScan(super::eadk_bridge__keyboard_scan()) }
     }
 }
 
 pub mod display {
+    use alloc::borrow::ToOwned;
+
     /// A rectangle on the display.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     pub struct Rect {
@@ -93,6 +158,18 @@ pub mod display {
         // TODO: validate dimensions
         unsafe {
             super::eadk_bridge__display_push_rect(pt.x, pt.y, bitmap.width, bitmap.height, bitmap.data.as_ptr() as *const u16)
+        }
+    }
+
+    /// Writes a string to the display.
+    pub fn write_string(str: &str, pt: Point, font: Font, text_color: Color, bg_color: Color) {
+        // Allocate a buffer for the string, and push a null-terminator
+        let mut str_owned = str.to_owned();
+        str_owned.push('\0');
+
+        // Write
+        unsafe {
+            write_string_null_terminated(str_owned.as_bytes(), pt, font, text_color, bg_color)
         }
     }
 
