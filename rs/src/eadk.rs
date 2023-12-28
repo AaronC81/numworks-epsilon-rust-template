@@ -9,7 +9,6 @@ extern "C" {
     // Display
     fn eadk_bridge__display_push_rect(x: u16, y: u16, width: u16, height: u16, pixels: *const u16);
     fn eadk_bridge__display_push_rect_uniform(x: u16, y: u16, width: u16, height: u16, color: u16);
-    fn eadk_bridge__display_pull_rect(x: u16, y: u16, width: u16, height: u16, pixels: *mut u16);
     fn eadk_bridge__display_wait_for_vblank() -> u8;
     fn eadk_bridge__display_draw_string(str: *const u8, x: u16, y: u16, large_font: u8, text_color: u16, bg_color: u16);
     
