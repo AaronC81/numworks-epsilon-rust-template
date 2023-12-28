@@ -12,6 +12,7 @@ endef
 
 src = $(addprefix src/,\
   main.c \
+  eadk_bridge.c \
 )
 
 CFLAGS = -std=c99
