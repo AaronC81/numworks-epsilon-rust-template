@@ -9,7 +9,7 @@ extern "C" {
 pub extern "C" fn rs_main() {
     unsafe {
         api_push_rect_uniform(10, 10, 10, 10, 0xe426);
-        api_draw_string(b"Hello from Rust!".as_ptr(), 50, 50, 0, 0, 0xFFFF);
+        api_draw_string(b"Hello from Rust!\0".as_ptr(), 50, 50, 0, 0, 0xFFFF);
     }
 }
 
