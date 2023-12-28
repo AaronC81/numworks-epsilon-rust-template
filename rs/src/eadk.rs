@@ -35,6 +35,9 @@ pub mod display {
         pub width: u16,
         pub height: u16,
     }
+    impl Rect {
+        pub const SCREEN: Rect = Rect { x: 0, y: 0, width: 320, height: 240 };
+    }
     
     /// A collection of sized pixel data which can be drawn to the screen as an image.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

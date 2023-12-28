@@ -26,6 +26,7 @@ pub extern "C" fn rs_main() {
         let mut bitmap_write_data = [Color::RED; 4 * 4];
         bitmap_write_data[0] = Color::BLUE;
         bitmap_write_data[(4 * 4) - 1] = Color::GREEN;
+        bitmap_write_data[core::convert::identity(20)] = Color::BLACK; // oh no
         display::draw_bitmap(
             Point { x: 2, y: 2 },
             Bitmap {
@@ -53,5 +54,14 @@ pub extern "C" fn rs_main() {
 
 #[panic_handler]
 fn panic_handler(_: &core::panic::PanicInfo) -> ! {
-    loop {}
+    display::fill(Rect::SCREEN, Color::WHITE);
+    unsafe {
+        display::write_string_null_terminated(
+            b"Panic!\0", Point { x: 0, y: 0 }, Font::Large, Color::WHITE, Color::RED,
+        );
+    }
+
+    loop {
+        input::keyboard_scan();
+    }
 }
