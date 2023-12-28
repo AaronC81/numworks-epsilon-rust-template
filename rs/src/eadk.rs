@@ -191,3 +191,26 @@ pub mod display {
         }
     }
 }
+
+pub mod timing {
+    /// Sleep for the given number of microseconds.
+    pub fn usleep(us: u32) {
+        unsafe {
+            super::eadk_bridge__timing_usleep(us);
+        }
+    }
+
+    // Sleep for the given number of milliseconds.
+    pub fn msleep(ms: u32) {
+        unsafe {
+            super::eadk_bridge__timing_msleep(ms);
+        }
+    }
+
+    /// Gets a millisecond counter, which can be used to implement custom timing-related operations.
+    pub fn millis() -> u64 {
+        unsafe {
+            super::eadk_bridge__timing_millis()
+        }
+    }
+}

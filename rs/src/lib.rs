@@ -4,7 +4,7 @@ pub mod eadk;
 pub mod mallocator;
 
 use alloc::format;
-use eadk::{display::{self, Rect, Color, Font, Point, Bitmap}, input::{self, Key}};
+use eadk::{display::{self, Rect, Color, Font, Point, Bitmap}, input::{self, Key}, timing};
 use mallocator::Mallocator;
 
 extern crate alloc;
@@ -15,10 +15,13 @@ static MALLOCATOR: Mallocator = Mallocator;
 #[no_mangle]
 pub extern "C" fn rs_main() {
     // Rectangle test
+    display::fill(Rect::SCREEN, Color::WHITE);
     display::fill(
         Rect { x: 10, y: 10, width: 10, height: 10 },
         Color(0xe426),
     );
+
+    timing::msleep(1000);
 
     // Text test
     display::write_string(
@@ -28,6 +31,8 @@ pub extern "C" fn rs_main() {
         Color::BLACK,
         Color::WHITE,
     );
+
+    timing::msleep(1000);
 
     // Bitmap writing test
     let mut bitmap_write_data = [Color::RED; 4 * 4];
