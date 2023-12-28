@@ -29,8 +29,8 @@ void eadk_bridge__display_pull_rect(uint16_t x, uint16_t y, uint16_t width, uint
     eadk_display_push_rect((eadk_rect_t){ x, y, width, height }, pixels);
 }
 
-bool eadk_bridge__display_wait_for_vblank() {
-    return eadk_display_wait_for_vblank();
+uint8_t eadk_bridge__display_wait_for_vblank() {
+    return (uint8_t)eadk_display_wait_for_vblank();
 }
 
 void eadk_bridge__display_draw_string(const char *str, uint16_t x, uint16_t y, uint8_t large_font, uint16_t text_color, uint16_t bg_color) {

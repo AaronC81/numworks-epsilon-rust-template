@@ -1,25 +1,35 @@
 #![no_std]
 
-extern "C" {
-    fn eadk_bridge__keyboard_scan() -> u64;
-    fn eadk_bridge__display_push_rect_uniform(x: u16, y: u16, width: u16, height: u16, color: u16);
-    fn eadk_bridge__display_draw_string(str: *const u8, x: u16, y: u16, large_font: u8, text_color: u16, bg_color: u16);
-}
+use eadk::{display::{self, Rect, Color, Font, Point}, input};
+
+pub mod eadk;
 
 #[no_mangle]
 pub extern "C" fn rs_main() {
     unsafe {
-        eadk_bridge__display_push_rect_uniform(10, 10, 10, 10, 0xe426);
-        eadk_bridge__display_draw_string(b"Hello from Rust!\0".as_ptr(), 50, 50, 0, 0, 0xFFFF);
+        display::fill(
+            Rect { x: 10, y: 10, width: 10, height: 10 },
+            Color(0xe426),
+        );
+        display::write_string_null_terminated(
+            b"Hello from Rust!\0",
+            Point { x: 50, y: 50 },
+            Font::Large,
+            Color(0),
+            Color(0xFFFF)
+        );
         
         loop {
             let colour =
-                if (eadk_bridge__keyboard_scan() & 0b1) > 0 {
-                    0
+                if (input::keyboard_scan() & 0b1) > 0 {
+                    Color(0)
                 } else {
-                    0xFFFF
+                    Color(0xFFFF)
                 };
-            eadk_bridge__display_push_rect_uniform(50, 100, 20, 20, colour);
+            display::fill(
+                Rect { x: 50, y: 100, width: 20, height: 20 },
+                colour,
+            );
         }
     }
 }
