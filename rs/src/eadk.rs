@@ -114,6 +114,19 @@ pub mod display {
         pub data: &'d [Color],
     }
 
+    impl<'d> Bitmap<'d> {
+        /// Checks that the size of `data` is equal to `width * height`, panicking if this is not
+        /// the case.
+        pub fn validate(&self) {
+            if self.data.len() != (self.width * self.height) as usize {
+                panic!(
+                    "bitmap data size ({}) does not match dimensions ({} x {})",
+                    self.data.len(), self.width, self.height
+                )
+            }
+        }
+    }
+
     /// A point on the display.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
     pub struct Point {
@@ -155,7 +168,7 @@ pub mod display {
 
     /// Draws a [Bitmap] to a given [Point] on the display.
     pub fn draw_bitmap(pt: Point, bitmap: Bitmap) {
-        // TODO: validate dimensions
+        bitmap.validate();
         unsafe {
             super::eadk_bridge__display_push_rect(pt.x, pt.y, bitmap.width, bitmap.height, bitmap.data.as_ptr() as *const u16)
         }
